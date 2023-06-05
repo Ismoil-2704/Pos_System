@@ -30,6 +30,7 @@ public class StartHandler implements Handler {
     public List<PartialBotApiMethod<? extends Serializable>> handle(BotSteps user, String message,Long user_id) {
         List<PartialBotApiMethod<? extends Serializable>> list = new ArrayList<>();
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setResizeKeyboard(true);
         LinkedList<KeyboardRow> keyBoard = new LinkedList<>();
         KeyboardRow row = new KeyboardRow();
         Optional<Employee> byUserId = employeeRepo.findByUserId(user_id);
