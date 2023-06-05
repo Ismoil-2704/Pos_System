@@ -1,6 +1,6 @@
 package com.example.postsystemforfather.config;
 
-import com.example.postsystemforfather.service.TelegramBot;
+import com.example.postsystemforfather.service.telegram.TelegramBot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
