@@ -2,16 +2,26 @@ package com.example.postsystemforfather.service.telegram;
 
 import com.example.postsystemforfather.service.telegram.component.UpdateReceiver;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.Get;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.Serializable;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.Scanner;
 
 @Component
 @Slf4j
@@ -34,9 +44,34 @@ public class TelegramBot extends TelegramLongPollingBot {
                 if (response instanceof SendMessage) {
                     executeWithExceptionCheck((SendMessage) response);
                 }
+                if (response instanceof GetFile){
+                    executeForDocument((GetFile) response);
+                }
             });
         }
     }
+
+    private void executeForDocument(GetFile getFile) {
+        try {
+            File file = execute(getFile);
+            URL url = new URL(file.getFileUrl(token));
+            XSSFWorkbook hs = new XSSFWorkbook(url.openStream());
+            XSSFSheet sheet = hs.getSheetAt(0);
+            for(int i=0; i<sheet.getPhysicalNumberOfRows();i++) {
+                XSSFRow row = sheet.getRow(i);
+                for(int j=0;j<row.getPhysicalNumberOfCells();j++) {
+                    System.out.print(row.getCell(j) +" ");
+                }
+                System.out.println(" ");
+            }
+
+        } catch (TelegramApiException e) {
+            System.out.println(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void executeWithExceptionCheck(SendMessage sendMessage) {
         try {
             execute(sendMessage);

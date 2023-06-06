@@ -9,6 +9,7 @@ import com.example.postsystemforfather.service.telegram.component.Handler;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -27,7 +28,7 @@ public class StartHandler implements Handler {
     }
 
     @Override
-    public List<PartialBotApiMethod<? extends Serializable>> handle(BotSteps user, String message,Long user_id) {
+    public List<PartialBotApiMethod<? extends Serializable>> handle(BotSteps user, String message, Long user_id, Document document) {
         List<PartialBotApiMethod<? extends Serializable>> list = new ArrayList<>();
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         keyboardMarkup.setResizeKeyboard(true);
