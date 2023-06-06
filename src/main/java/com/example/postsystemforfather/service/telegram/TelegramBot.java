@@ -32,6 +32,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Value("${bot.token}")
     private String token;
     private final UpdateReceiver updateReceiver;
+
     public TelegramBot(UpdateReceiver updateReceiver) {
         this.updateReceiver = updateReceiver;
     }
@@ -44,7 +45,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 if (response instanceof SendMessage) {
                     executeWithExceptionCheck((SendMessage) response);
                 }
-                if (response instanceof GetFile){
+                if (response instanceof GetFile) {
                     executeForDocument((GetFile) response);
                 }
             });
@@ -57,11 +58,12 @@ public class TelegramBot extends TelegramLongPollingBot {
             URL url = new URL(file.getFileUrl(token));
             XSSFWorkbook hs = new XSSFWorkbook(url.openStream());
             XSSFSheet sheet = hs.getSheetAt(0);
-            for(int i=0; i<sheet.getPhysicalNumberOfRows();i++) {
+            for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
                 XSSFRow row = sheet.getRow(i);
-                for(int j=0;j<row.getPhysicalNumberOfCells();j++) {
-                    System.out.print(row.getCell(j) +" ");
-                }
+                System.out.print(row.getCell(0) + " ");
+                System.out.print(row.getCell(1) + " ");
+                System.out.print(row.getCell(2) + " ");
+
                 System.out.println(" ");
             }
 

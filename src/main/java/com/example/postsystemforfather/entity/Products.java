@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Products extends BaseEntity{
     @Column(name = "prod_name")
@@ -27,4 +26,8 @@ public class Products extends BaseEntity{
     private Timestamp last_modified;
     @Column(name = "user")
     private Long user_id;
+
+    public Products(String prod_name) {
+        this.prod_name = prod_name;
+    }
 }
