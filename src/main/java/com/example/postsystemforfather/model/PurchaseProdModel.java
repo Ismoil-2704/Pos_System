@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ComingProdModel {
+public class PurchaseProdModel {
     private Long Id;
     private String name;
     private Integer count;

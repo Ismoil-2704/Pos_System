@@ -1,9 +1,11 @@
 package com.example.postsystemforfather.service;
 
-import com.example.postsystemforfather.model.ComingProdModel;
+import com.example.postsystemforfather.model.PurchaseProdModel;
 import com.example.postsystemforfather.model.ResponseModel;
 
+import java.util.List;
+
 public interface ComingProductsService {
-    ResponseModel saveOrUpdate(ComingProdModel comingProdModel);
-    ResponseModel checkedProduct(ComingProdModel comingProdModel);
+    ResponseModel saveOrUpdate(List<PurchaseProdModel> purchaseProdModel);
+    ResponseModel checkedProduct(PurchaseProdModel purchaseProdModel);
 }

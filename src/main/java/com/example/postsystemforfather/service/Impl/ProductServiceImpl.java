@@ -7,6 +7,8 @@ import com.example.postsystemforfather.repository.ProductsRepo;
 import com.example.postsystemforfather.service.ProductService;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,18 +20,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseModel createOrUpdate(ProductsModel productsModel){
+    public ResponseModel createOrUpdate(List<ProductsModel> productsModel){
         ResponseModel responseModel = null;
+        LinkedList<Products> list = new LinkedList<>();
         try{
-            Products products = new Products();
-            if (productsModel.getId() != null){
-                Optional<Products> byId = productsRepo.findById(productsModel.getId());
-                if (byId.isPresent()) products = byId.get();
+            for (ProductsModel model : productsModel) {
+                Products products = new Products();
+                if (model.getId() != null){
+                    Optional<Products> byId = productsRepo.findById(model.getId());
+                    if (byId.isPresent()) products = byId.get();
+                }
+                products.setProd_name(model.getName());
+                list.add(products);
             }
-            products.setProd_name(productsModel.getName());
-            products.setCome_price(productsModel.getCome_price());
-            products.setSel_price(productsModel.getSel_price());
-            productsRepo.save(products);
+            productsRepo.saveAll(list);
             responseModel = new ResponseModel("PRODUCT_SUCCESSFULLY_SAVED",200);
         }catch (Exception e){
             System.out.println(e.getMessage());

@@ -12,6 +12,8 @@ import lombok.Setter;
 public class ProductsModel {
     private Long id;
     private String name;
-    private Double come_price;
-    private Double sel_price;
+
+    public ProductsModel(String name) {
+        this.name = name;
+    }
 }

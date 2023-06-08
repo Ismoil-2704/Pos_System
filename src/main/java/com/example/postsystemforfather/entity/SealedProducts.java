@@ -6,14 +6,16 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 public class SealedProducts extends BaseEntity{
-    @Column(name = "prod_name")
-    private String prod_name;
+
+    @ManyToOne
+    private Products products;
     @Column(name = "count")
     private Integer count;
     @Column(name = "price")

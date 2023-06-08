@@ -1,6 +1,5 @@
 package com.example.postsystemforfather.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,20 +13,13 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 public class Products extends BaseEntity{
-    @Column(name = "prod_name")
+    @Column(name = "prod_name",unique = true)
     private String prod_name;
-    @Column(name = "come_price")
-    private Double come_price;
-    @Column(name = "sel_price")
-    private Double sel_price;
     @Column(name = "created_date")
     private Timestamp created_date;
     @Column(name = "last_modifide")
     private Timestamp last_modified;
-    @Column(name = "user")
+    @Column(name = "users")
     private Long user_id;
 
-    public Products(String prod_name) {
-        this.prod_name = prod_name;
-    }
 }

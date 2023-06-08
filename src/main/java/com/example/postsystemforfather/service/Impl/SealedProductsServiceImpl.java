@@ -1,23 +1,28 @@
 package com.example.postsystemforfather.service.Impl;
 
+import com.example.postsystemforfather.entity.Products;
 import com.example.postsystemforfather.entity.Sealed;
 import com.example.postsystemforfather.entity.SealedProducts;
 import com.example.postsystemforfather.model.ResponseModel;
 import com.example.postsystemforfather.model.SealedProdModel;
 import com.example.postsystemforfather.model.SealedProdModelForList;
+import com.example.postsystemforfather.repository.ProductsRepo;
 import com.example.postsystemforfather.repository.SealedProductsRepo;
 import com.example.postsystemforfather.service.SealedProductsService;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SealedProductsServiceImpl implements SealedProductsService {
     private final SealedProductsRepo sealedProductsRepo;
+    private final ProductsRepo productsRepo;
 
-    public SealedProductsServiceImpl(SealedProductsRepo sealedProductsRepo) {
+    public SealedProductsServiceImpl(SealedProductsRepo sealedProductsRepo, ProductsRepo productsRepo) {
         this.sealedProductsRepo = sealedProductsRepo;
+        this.productsRepo = productsRepo;
     }
 
     @Override
@@ -32,10 +37,15 @@ public class SealedProductsServiceImpl implements SealedProductsService {
             sealedProd.setOn_credit(sealedProdModel.getOn_credit());
             for (SealedProdModelForList product : sealedProdModel.getSealedProds()) {
                 SealedProducts sealedProducts = new SealedProducts();
-                sealedProducts.setPrice(product.getPrice());
-                sealedProducts.setProd_name(product.getName());
-                sealedProducts.setCount(product.getCount());
-                sealedProductsList.add(sealedProducts);
+                Optional<Products> prod = productsRepo.findByProd_name(product.getName());
+                if (prod.isPresent()) {
+                    sealedProducts.setProducts(prod.get());
+                    sealedProducts.setPrice(product.getPrice());
+                    sealedProducts.setCount(product.getCount());
+                    sealedProductsList.add(sealedProducts);
+                }else {
+                    return new ResponseModel("Mahsulot topilmadi,Mahsulot kiritilganligini tekshiring!", 400);
+                }
             }
             sealedProd.setSealedProducts(sealedProductsList);
             sealedProductsRepo.save(sealedProd);
