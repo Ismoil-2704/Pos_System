@@ -3,9 +3,11 @@ package com.example.postsystemforfather.service.telegram;
 import com.example.postsystemforfather.entity.BotSteps;
 import com.example.postsystemforfather.service.telegram.Enum.State;
 import com.example.postsystemforfather.service.telegram.component.Handler;
+import com.example.postsystemforfather.utils.TelegramUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Document;
 
 import java.io.Serializable;

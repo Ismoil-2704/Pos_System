@@ -13,5 +13,11 @@ public class PurchaseProdModel {
     private Long Id;
     private String name;
     private Integer count;
-    private Integer price;
+    private Double price;
+
+    public PurchaseProdModel(String name, Integer count, Double price) {
+        this.name = name;
+        this.count = count;
+        this.price = price;
+    }
 }

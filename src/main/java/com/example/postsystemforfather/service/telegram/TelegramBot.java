@@ -1,7 +1,10 @@
 package com.example.postsystemforfather.service.telegram;
 
 import com.example.postsystemforfather.model.ProductsModel;
+import com.example.postsystemforfather.model.PurchaseProdModel;
+import com.example.postsystemforfather.model.ResponseModel;
 import com.example.postsystemforfather.service.ProductService;
+import com.example.postsystemforfather.service.PurchaseProductsService;
 import com.example.postsystemforfather.service.telegram.component.UpdateReceiver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -32,10 +35,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String token;
     private final UpdateReceiver updateReceiver;
     private final ProductService productService;
-
-    public TelegramBot(UpdateReceiver updateReceiver, ProductService productService) {
+    private final PurchaseProductsService purchaseProductsService;
+    public TelegramBot(UpdateReceiver updateReceiver, ProductService productService, PurchaseProductsService purchaseProductsService) {
         this.updateReceiver = updateReceiver;
         this.productService = productService;
+        this.purchaseProductsService = purchaseProductsService;
     }
 
     @Override
@@ -47,25 +51,52 @@ public class TelegramBot extends TelegramLongPollingBot {
                     executeWithExceptionCheck((SendMessage) response);
                 }
                 if (response instanceof GetFile) {
-                    executeForDocument((GetFile) response);
+                    saveProductExecutor((GetFile) response,update);
                 }
             });
         }
     }
 
-    private void executeForDocument(GetFile getFile) {
+    private void saveProductExecutor(GetFile getFile,Update update) {
         try {
+            SendMessage sendMessage = new SendMessage();
             File file = execute(getFile);
             URL url = new URL(file.getFileUrl(token));
             XSSFWorkbook hs = new XSSFWorkbook(url.openStream());
             XSSFSheet sheet = hs.getSheetAt(0);
-            LinkedList<ProductsModel> list = new LinkedList<>();
-            for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
-                XSSFRow row = sheet.getRow(i);
-                list.add(new ProductsModel(row.getCell(0).toString()));
-                System.out.println("set to list");
+            int physicalNumberOfRows = sheet.getPhysicalNumberOfRows();
+            short lastCellNum = sheet.getRow(0).getLastCellNum();
+            if (lastCellNum > 1){
+                LinkedList<PurchaseProdModel> list = new LinkedList<>();
+
+                for (int i = 0; i < physicalNumberOfRows; i++) {
+                    XSSFRow row = sheet.getRow(i);
+                    String prod_name = row.getCell(0).toString();
+                    double count = Double.parseDouble(row.getCell(1).toString());
+                    double price = Double.parseDouble(row.getCell(2).toString());
+                    PurchaseProdModel purchaseProdModel = new PurchaseProdModel();
+                    purchaseProdModel.setName(prod_name);
+                    purchaseProdModel.setCount((int) count);
+                    purchaseProdModel.setPrice(price);
+                    list.add(purchaseProdModel);
+                    System.out.println("set to list");
+                }
+                ResponseModel responseModel = purchaseProductsService.saveOrUpdate(list);
+                sendMessage.setChatId(update.getMessage().getChatId());
+                sendMessage.setText(responseModel.getMessage());
+            }else {
+                LinkedList<ProductsModel> list = new LinkedList<>();
+
+                for (int i = 0; i < physicalNumberOfRows; i++) {
+                    XSSFRow row = sheet.getRow(i);
+                    list.add(new ProductsModel(row.getCell(0).toString()));
+                    System.out.println("set to list");
+                }
+                ResponseModel responseModel = productService.createOrUpdate(list);
+                sendMessage.setChatId(update.getMessage().getChatId());
+                sendMessage.setText(responseModel.getMessage());
             }
-        productService.createOrUpdate(list);
+            execute(sendMessage);
         } catch (TelegramApiException e) {
             System.out.println(e);
         } catch (IOException e) {

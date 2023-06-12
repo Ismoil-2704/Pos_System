@@ -7,6 +7,8 @@ import com.example.postsystemforfather.repository.ProductsRepo;
 import com.example.postsystemforfather.service.ProductService;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -26,18 +28,21 @@ public class ProductServiceImpl implements ProductService {
         try{
             for (ProductsModel model : productsModel) {
                 Products products = new Products();
-                if (model.getId() != null){
-                    Optional<Products> byId = productsRepo.findById(model.getId());
-                    if (byId.isPresent()) products = byId.get();
+                Optional<Products> byId = productsRepo.findByProdName(model.getName());
+                if (byId.isPresent()){
+                     products = byId.get();
+                     products.setLast_modified(new Timestamp(new Date().getTime()));
+                }else {
+                    products.setCreated_date(new Timestamp(new Date().getTime()));
                 }
-                products.setProd_name(model.getName());
+                products.setProdName(model.getName());
                 list.add(products);
             }
             productsRepo.saveAll(list);
-            responseModel = new ResponseModel("PRODUCT_SUCCESSFULLY_SAVED",200);
+            responseModel = new ResponseModel("Mahsulot muvaffaqiyatli kiritildi!",200);
         }catch (Exception e){
             System.out.println(e.getMessage());
-            responseModel = new ResponseModel("ERROR_WHEN_SAVE_PRODUCT",500);
+            responseModel = new ResponseModel("Mahsulot kitritishda xatolik!",500);
         }
         return responseModel;
     }

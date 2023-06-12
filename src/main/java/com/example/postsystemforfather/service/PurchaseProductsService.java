@@ -5,7 +5,7 @@ import com.example.postsystemforfather.model.ResponseModel;
 
 import java.util.List;
 
-public interface ComingProductsService {
+public interface PurchaseProductsService {
     ResponseModel saveOrUpdate(List<PurchaseProdModel> purchaseProdModel);
     ResponseModel checkedProduct(PurchaseProdModel purchaseProdModel);
 }

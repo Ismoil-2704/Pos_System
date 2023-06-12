@@ -37,7 +37,7 @@ public class SealedProductsServiceImpl implements SealedProductsService {
             sealedProd.setOn_credit(sealedProdModel.getOn_credit());
             for (SealedProdModelForList product : sealedProdModel.getSealedProds()) {
                 SealedProducts sealedProducts = new SealedProducts();
-                Optional<Products> prod = productsRepo.findByProd_name(product.getName());
+                Optional<Products> prod = productsRepo.findByProdName(product.getName());
                 if (prod.isPresent()) {
                     sealedProducts.setProducts(prod.get());
                     sealedProducts.setPrice(product.getPrice());

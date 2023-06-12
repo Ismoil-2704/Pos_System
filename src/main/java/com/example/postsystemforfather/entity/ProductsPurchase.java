@@ -21,7 +21,7 @@ public class ProductsPurchase extends BaseEntity{
     @Column(name = "count")
     private Integer count;
     @Column(name = "price")
-    private Integer price;
+    private Double price;
     @Column(name = "come_date")
     private Date come_date;
     @Column(name = "users")

@@ -58,7 +58,7 @@ public class UpdateReceiver {
                     }
                     botStepRepo.save(user);
                 }else {
-                    user = byChatId.orElseGet(() -> new BotSteps(id,firstName));
+                    user = byChatId.orElseThrow();
                 }
                 return getHandlerByState(user.getBotState()).handle(user, text, user_id,new Document());
             } else if (update.hasCallbackQuery()) {

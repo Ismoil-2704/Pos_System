@@ -4,9 +4,9 @@ import com.example.postsystemforfather.entity.ProductsPurchase;
 import com.example.postsystemforfather.entity.Products;
 import com.example.postsystemforfather.model.PurchaseProdModel;
 import com.example.postsystemforfather.model.ResponseModel;
-import com.example.postsystemforfather.repository.ComingProdRepo;
+import com.example.postsystemforfather.repository.PurchaseProdRepo;
 import com.example.postsystemforfather.repository.ProductsRepo;
-import com.example.postsystemforfather.service.ComingProductsService;
+import com.example.postsystemforfather.service.PurchaseProductsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductPurchaseServiceImpl implements ComingProductsService {
+public class ProductPurchaseServiceImpl implements PurchaseProductsService {
     final
-    ComingProdRepo comingProductRepo;
+    PurchaseProdRepo comingProductRepo;
 
     final ProductsRepo productsRepo;
 
-    public ProductPurchaseServiceImpl(ComingProdRepo comingProductRepo, ProductsRepo productsRepo) {
+    public ProductPurchaseServiceImpl(PurchaseProdRepo comingProductRepo, ProductsRepo productsRepo) {
         this.comingProductRepo = comingProductRepo;
         this.productsRepo = productsRepo;
     }
@@ -31,8 +31,8 @@ public class ProductPurchaseServiceImpl implements ComingProductsService {
         LinkedList<ProductsPurchase> list = new LinkedList<>();
         for (PurchaseProdModel prodModel : purchaseProdModel) {
             ProductsPurchase productsPurchase = new ProductsPurchase();
-            if (prodModel.getId() != null) {
-                Optional<Products> prod = productsRepo.findByProd_name(prodModel.getName());
+
+                Optional<Products> prod = productsRepo.findByProdName(prodModel.getName());
                 if (prod.isPresent()) {
                     productsPurchase.setProducts(prod.get());
                     productsPurchase.setCount(prodModel.getCount());
@@ -41,7 +41,7 @@ public class ProductPurchaseServiceImpl implements ComingProductsService {
                 } else {
                     return new ResponseModel("Mahsulot topilmadi,Mahsulot kiritilganligini tekshiring!", 400);
                 }
-            }
+
             list.add(productsPurchase);
         }
         comingProductRepo.saveAll(list);
